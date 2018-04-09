@@ -3,7 +3,8 @@
 include:
   - php
 
-php-opcache:
+#php-opcache:
+{{ php.opcache_pkg }}:
   pkg.installed:
     - name: {{ php.opcache_pkg }}
 
