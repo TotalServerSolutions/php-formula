@@ -16,11 +16,19 @@
   {% do pool_defaults.update(pvalues) %}
   {% do pvalues.update(pool_defaults) %}
 {% endfor %}
+
 {% set state = 'php_fpm_pool_conf_' ~ loop.index0 %}
 {% set fpath = path_join(config.get('filename', pool), php.lookup.fpm.pools) %}
+{% set default_enabled = salt['pillar.get']('php:ng:fpm:service:enabled', False) %}
+
+{% if 'enabled' in config %}
+  {% set config_enabled = config.enabled %}
+{% else %}
+  {% set config_enabled = default_enabled %}
+{% endif %}
 
 {{ state }}:
-{% if config.enabled %}
+{% if config_enabled %}
   file.managed:
     {{ sls_block(config.get('opts', {})) }}
     - name: {{ fpath }}
